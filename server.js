@@ -11,14 +11,12 @@ const path = require('path');
 const app = express();
 const PORT = 3000;
 
-// In-memory user object (single account for demo)
 const user = {
   username: process.env.USERNAME,
   password: process.env.PASSWORD,
   googleId: null
 };
 
-// ---------- Middleware Setup ----------
 app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
@@ -30,20 +28,21 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// ---------- Passport Serialization ----------
+
 passport.serializeUser((userObj, done) => {
-  // We'll store only the username in session
+
   done(null, userObj.username);
 });
+
 passport.deserializeUser((username, done) => {
-  // Rebuild the user object from in-memory store
+
   if (username === user.username) {
     return done(null, user);
   }
   return done(null, false);
 });
 
-// ---------- Local Strategy (username/password) ----------
+
 passport.use(
   new LocalStrategy((username, password, done) => {
     if (username === user.username && password === user.password) {
@@ -55,26 +54,20 @@ passport.use(
 
 // ---------- Google OAuth Verify Function ----------
 const googleVerify = (req, accessToken, refreshToken, profile, done) => {
-  // If req.user exists, it's a linking flow
   if (req.user) {
-    // Link Google account
     req.user.googleId = profile.id;
     return done(null, req.user);
   }
 
-  // Otherwise, it's a login-via-Google flow
   if (user.googleId && profile.id === user.googleId) {
-    // Found matching linked user
     return done(null, user);
   }
 
-  // No linked account found
   return done(null, false, { message: 'No account linked to this Google user.' });
 };
 
-// ---------- Two Instances of GoogleStrategy ----------
+// ---------- GoogleStrategy ----------
 
-// 1) For initial Google LOGIN
 passport.use(
   'google-login',
   new GoogleStrategy(
@@ -88,7 +81,6 @@ passport.use(
   )
 );
 
-// 2) For LINKING Google account after local login
 passport.use(
   'google-link',
   new GoogleStrategy(
@@ -102,7 +94,6 @@ passport.use(
   )
 );
 
-// ---------- Middleware to Protect Routes ----------
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
@@ -112,17 +103,14 @@ function ensureAuthenticated(req, res, next) {
 
 // ---------- ROUTES ----------
 
-// --- 1) GET /login — mostra o formulário de login local ---
 app.get('/login', (req, res) => {
   if (req.isAuthenticated()) {
     return res.redirect('/dashboard');
   }
 
-  // Se não autenticado, envia o formulário HTML
   res.sendFile(path.join(__dirname, 'views/login.html'));
 });
 
-// --- 2) POST /login — processa autenticação local ---
 app.post(
   '/login',
   passport.authenticate('local', {
@@ -131,7 +119,6 @@ app.post(
   })
 );
 
-// --- 3) GET /auth/google — inicia login via Google ---
 app.get(
   '/auth/google',
   passport.authenticate('google-login', {
@@ -139,19 +126,17 @@ app.get(
   })
 );
 
-// --- 4) GET /auth/google/callback — callback após login via Google ---
 app.get(
   '/auth/google/callback',
   passport.authenticate('google-login', {
     failureRedirect: '/login'
   }),
   (req, res) => {
-    // Se login bem‐sucedido, vai para o dashboard
+
     res.redirect('/dashboard');
   }
 );
 
-// --- 5) GET /connect/google — inicia fluxo de link (bind) do Google (precisa estar autenticado local) ---
 app.get(
   '/connect/google',
   ensureAuthenticated,
@@ -160,7 +145,6 @@ app.get(
   })
 );
 
-// --- 6) GET /connect/google/callback — callback após link com Google ---
 app.get(
   '/connect/google/callback',
   ensureAuthenticated,
@@ -168,18 +152,15 @@ app.get(
     failureRedirect: '/dashboard'
   }),
   (req, res) => {
-    // Após vincular, redireciona ao dashboard
     res.redirect('/dashboard');
   }
 );
 
-// --- 7) GET /disconnect/google — desliga (unlink) a conta Google ---
 app.get('/disconnect/google', ensureAuthenticated, (req, res) => {
   req.user.googleId = null;
   res.redirect('/dashboard');
 });
 
-// --- 8) GET /dashboard — área protegida com opções de conectar/desconectar Google ---
 app.get('/dashboard', ensureAuthenticated, (req, res) => {
   const isGoogleLinked = !!req.user.googleId;
   res.send(`
@@ -208,14 +189,12 @@ app.get('/dashboard', ensureAuthenticated, (req, res) => {
   `);
 });
 
-// --- 9) GET /logout — encerra sessão ---
 app.get('/logout', (req, res) => {
   req.logout(() => {
     res.redirect('/login');
   });
 });
 
-// --- 10) Iniciar servidor ---
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
 });
