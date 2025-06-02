@@ -4,6 +4,11 @@ A sample Node.js project that demonstrates **hybrid authentication**:
 1. **Local login** using a predefined username and password.  
 2. **Google OAuth 2.0 login** (link/unlink a Google account for future Google-only authentication).
 
+
+![image](https://github.com/user-attachments/assets/0a4be360-41b5-4b7b-afaa-e854ea6eed66)
+
+
+
 This README explains the project’s purpose, setup instructions, configuration, and usage details.
 
 ---
