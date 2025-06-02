@@ -1,0 +1,10 @@
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+LOGIN_CALLBACK_URL=http://localhost:3000/auth/google/callback
+LINK_CALLBACK_URL=http://localhost:3000/connect/google/callback
+
+# Pre‐registered user info (for testing)
+USERNAME=testuser
+PASSWORD=testpass
+
+SESSION_SECRET=your_session_secret_here
