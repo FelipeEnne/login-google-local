@@ -76,11 +76,7 @@ The goal is to demonstrate:
 
 2. **Initialize package.json**   
    ```bash
-   npm init -y
-
-3. **Install dependencies**   
-   ```bash
-   npm install express express-session passport passport-local passport-google-oauth20 dotenv
+   npm i
 
 4. **Create a .env file in the project root**   
 
