@@ -15,17 +15,16 @@ This README explains the project’s purpose, setup instructions, configuration,
 3. [Prerequisites](#prerequisites)  
 4. [Installation](#installation)  
 5. [Environment Variables](#environment-variables)  
-7. [Running the Application](#running-the-application)  
-8. [Usage Guide](#usage-guide)  
+6. [Running the Application](#running-the-application)  
+7. [Usage Guide](#usage-guide)  
    - [Local Login](#local-login)  
    - [Linking Google Account](#linking-google-account)  
    - [Google-Only Login](#google-only-login)  
    - [Disconnecting (Unlinking) Google Account](#disconnecting-unlinking-google-account)  
    - [Logout](#logout)  
-9. [Route Reference](#route-reference)  
-10. [Session & Security](#session--security)  
-11. [Extending for Production Use](#extending-for-production-use)  
-12. [License](#license)
+8. [Session & Security](#session--security)  
+9. [Extending for Production Use](#extending-for-production-use)  
+10. [License](#license)
 
 ---
 
@@ -156,27 +155,6 @@ You will see a login page where you can either:
 
 - At any time (from the Dashboard), click **Logout** to end the session.  
 - You will be redirected back to the login page.
-
-## Route Reference
-
-Below is a brief summary of all routes and their purpose:
-
-| Method | Path                        | Description                                                                                  |
-| ------ | --------------------------- | -------------------------------------------------------------------------------------------- |
-| GET    | `/login`                    | Show login page (username/password + “Login with Google” button)                             |
-| POST   | `/login`                    | Process local login via Passport-Local                                                       |
-| GET    | `/auth/google`              | Start Google “login” OAuth flow (Passport-Google strategy `google-login`)                    |
-| GET    | `/auth/google/callback`     | Callback after Google login attempt; on success → `/dashboard`                                 |
-| GET    | `/connect/google`           | Start Google “link” OAuth flow (Passport-Google strategy `google-link`)                       |
-| GET    | `/connect/google/callback`  | Callback after Google link attempt; on success → `/dashboard`                                  |
-| GET    | `/disconnect/google`        | Unlink (remove) Google account from the local user                                           |
-| GET    | `/dashboard`                | Protected page showing link status & navigation links                                        |
-| GET    | `/logout`                   | Logout the current user session; redirect to `/login`                                        |
-
-**Note:**
-
-- Both `/auth/google/...` and `/connect/google/...` use Passport’s Google strategy, but with different identifiers (`google-login` vs. `google-link`) so that we can handle login flows vs. linking flows separately.  
-- All routes under `/connect/google` and `/dashboard` require the user to be authenticated locally (or via a valid session).
 
 ## Session & Security
 
